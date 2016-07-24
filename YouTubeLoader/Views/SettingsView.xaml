@@ -1,0 +1,46 @@
+﻿<UserControl x:Class="YouTubeLoader.Views.SettingsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:YouTubeLoader.Views"
+      xmlns:properties="clr-namespace:YouTubeLoader.Properties"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="700">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Background="#FF151515">
+            <TextBlock Text="settings" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="#FFD24726" FontSize="20" FontFamily="Segoe UI Semilight" Margin="20,0"></TextBlock>
+        </Grid>
+
+        <Grid Row="1" Margin="20,20,20,0">
+            <StackPanel>
+                <TextBlock HorizontalAlignment="Center" Foreground="#FFE8E8E8" FontSize="16">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=VideoQualityNumeric}" Value="0">
+                                    <Setter Property="Text" Value="Worst" />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=VideoQualityNumeric}" Value="50">
+                                    <Setter Property="Text" Value="Medium" />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding Source={x:Static properties:Settings.Default}, Path=VideoQualityNumeric}" Value="100">
+                                    <Setter Property="Text" Value="Best" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                 <Slider x:Name="SliderVideoQuality" Minimum="0" Maximum="100" SmallChange="1" LargeChange="1" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VideoQualityNumeric, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="50,0"></Slider>
+            </StackPanel>
+           
+        </Grid>
+    </Grid>
+</UserControl>
