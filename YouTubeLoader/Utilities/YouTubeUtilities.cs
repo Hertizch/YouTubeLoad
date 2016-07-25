@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using YouTubeLoader.Models;
@@ -30,9 +29,12 @@ namespace YouTubeLoader.Utilities
             // Get status
             var regexStatus = Regex.Match(lastOutput, "\\[youtube\\]\\s*(.*):\\s*(.*)");
             if (regexStatus.Success)
-            {
                 youTubeObject.Status = regexStatus.Groups[2].Value;
-            }
+
+            // Get merge status
+            var regexMerge = Regex.Match(lastOutput, "\\[ffmpeg\\]\\s*(.*)\\s*into.*");
+            if (regexMerge.Success)
+                youTubeObject.Status = regexStatus.Groups[1].Value;
 
             // Get Download info
             var regexDownload = Regex.Match(lastOutput, "\\[download\\]\\s*([0-9][0-9.]*[0-9])%\\s*of\\s*([0-9][0-9.]*[0-9])(.*)\\s*at\\s*([0-9][0-9.]*[0-9])(.*)\\s*ETA\\s*([0-9][0-9:]*[0-9])");
@@ -53,10 +55,9 @@ namespace YouTubeLoader.Utilities
             // Get download complete
             var regexComplete = Regex.Match(lastOutput, "\\[download\\]\\s*100%\\s*of\\s*(.*)\\s*in\\s*(.*)");
             if (regexComplete.Success)
-            {
                 youTubeObject.Status = "Complete";
-            }
 
+            // Get if duplicated download
             if (lastOutput.Contains("has already been downloaded"))
             {
                 youTubeObject.Status = "Complete";
@@ -65,9 +66,16 @@ namespace YouTubeLoader.Utilities
             }
         }
 
-        public static string GetYouTubeIdFromUrl(string url)
+        public static bool GetValidYouTubeUrlAndId(string url, out string id)
         {
-            return string.IsNullOrEmpty(url) ? null : url.Substring(url.IndexOf("?v=", StringComparison.Ordinal) + 3);
+            id = null;
+
+            var regex = Regex.Match(url, "(?:https|http):\\/\\/(?:www\\.|)(?:youtube|youtu)\\.(?:com|be)\\/(?:watch\\?v=|_)(\\S+)");
+
+            if (regex.Success)
+                id = regex.Groups[1].Value;
+
+            return regex.Success && !string.IsNullOrEmpty(id) && id.Length >= 11;
         }
     }
 }

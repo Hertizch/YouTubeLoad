@@ -58,7 +58,7 @@ namespace YouTubeLoader.ViewModels
         {
             var sb = new StringBuilder();
 
-            sb.Append($"-f \"bestvideo+bestaudio/best\" -o \"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\%(title)s-%(id)s.%(ext)s\" https://www.youtube.com/watch?v={youTubeObject.Id}");
+            sb.Append($"-f \"bestvideo+bestaudio/best\" -o \"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\%(title)s-%(id)s-[%(resolution)s].%(ext)s\" https://www.youtube.com/watch?v={youTubeObject.Id}");
 
             // If to add new video to list, get title
             string specialArgs = null;
@@ -172,20 +172,34 @@ namespace YouTubeLoader.ViewModels
 
         private async void Execute_AddVideoToQueue(string url)
         {
-            var id = YouTubeUtilities.GetYouTubeIdFromUrl(url);
+            string id;
 
-            if (YouTubeObjects.Any(x => x.Id == id))
+            // Check if valid youtube url, and return it's id
+            if (YouTubeUtilities.GetValidYouTubeUrlAndId(url, out id))
             {
-                Logger.Write($"Attempt to add video object with id: {id} failed. It already exists in the collection.", true);
+                Logger.Write($"Verification of url: {url} successfull -- Id returned: {id}", true);
+            }
+            else
+            {
+                Logger.Write($"Attempt to add video object from url: {url} failed -- Url format is invalid or Id length is less then 11 characters.", true);
                 return;
             }
 
+            // Check for duplicates
+            if (YouTubeObjects.Any(x => x.Id == id))
+            {
+                Logger.Write($"Attempt to add video object with id: {id} failed -- It already exists in the collection.", true);
+                return;
+            }
+
+            // Add the object to the collection
             YouTubeObjects.Add(new YouTubeObject
             {
                 Url = url,
                 Id = id
             });
 
+            // Set it's status properties
             YouTubeObjects[YouTubeObjects.IndexOf(YouTubeObjects.First(x => x.Id == id))].Status = "Verifying...";
             YouTubeObjects[YouTubeObjects.IndexOf(YouTubeObjects.First(x => x.Id == id))].IsGatheringInfo = true;
 
@@ -205,14 +219,7 @@ namespace YouTubeLoader.ViewModels
                 return;
             }
 
-            if (httpStatusCode != HttpStatusCode.OK)
-            {
-                YouTubeObjects[YouTubeObjects.IndexOf(YouTubeObjects.First(x => x.Id == id))].Status = "Invalid";
-                YouTubeObjects[YouTubeObjects.IndexOf(YouTubeObjects.First(x => x.Id == id))].IsGatheringInfo = false;
-                Logger.Write($"GetResponseStatusCode failed on url: {url} -- Status code returned: {httpStatusCode}", true);
-                return;
-            }
-
+            // Reset properties
             YouTubeObjects[YouTubeObjects.IndexOf(YouTubeObjects.First(x => x.Id == id))].Status = null;
             YouTubeObjects[YouTubeObjects.IndexOf(YouTubeObjects.First(x => x.Id == id))].IsGatheringInfo = false;
 
