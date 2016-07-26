@@ -19,7 +19,11 @@
 
         <Grid Row="1" Margin="20,20,20,0">
             <StackPanel>
-                <TextBlock HorizontalAlignment="Center" Foreground="#FFE8E8E8" FontSize="16">
+                <CheckBox IsChecked="{Binding Source={x:Static properties:Settings.Default}, Path=AutoDownloadOnAdd, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          Content="Download newly added videos immediately" Foreground="#FFE8E8E8" />
+                
+                
+                <TextBlock HorizontalAlignment="Center" Foreground="#FFE8E8E8" FontSize="16" Visibility="Collapsed">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
                             <Style.Triggers>
@@ -38,7 +42,7 @@
                         </Style>
                     </TextBlock.Style>
                 </TextBlock>
-                 <Slider x:Name="SliderVideoQuality" Minimum="0" Maximum="100" SmallChange="1" LargeChange="1" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VideoQualityNumeric, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="50,0"></Slider>
+                 <Slider x:Name="SliderVideoQuality" Visibility="Collapsed" Minimum="0" Maximum="100" SmallChange="1" LargeChange="1" Value="{Binding Source={x:Static properties:Settings.Default}, Path=VideoQualityNumeric, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="50,0"></Slider>
             </StackPanel>
            
         </Grid>

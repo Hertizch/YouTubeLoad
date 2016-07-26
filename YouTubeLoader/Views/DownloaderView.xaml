@@ -88,6 +88,18 @@
                             <!-- Stats -->
                             <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Background="{Binding ElementName=WindowRoot, Path=Background}" Visibility="{Binding Path=IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <TextBlock Text="{Binding Path=Status}" Foreground="#FFC5C5C5" />
+                                <TextBlock Foreground="#FFC5C5C5">
+                                    <TextBlock.Style>
+                                        <Style TargetType="{x:Type TextBlock}">
+                                            <Setter Property="Text" Value=" Video:" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=IsDownloadingAudio}" Value="True">
+                                                    <Setter Property="Text" Value=" Audio:" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
                                 <TextBlock Text="{Binding Path=ProgressPercentage, StringFormat={} {0}%}" Foreground="#FFC5C5C5" />
                                 <TextBlock Text="{Binding Path=Speed, StringFormat={}Speed: {0}}" Margin="10,0,0,0" Foreground="#FFC5C5C5" />
                                 <TextBlock Text="{Binding Path=SpeedSuffix}" Foreground="#FFC5C5C5" />

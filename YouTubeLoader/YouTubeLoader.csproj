@@ -36,6 +36,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -65,6 +69,7 @@
       <DependentUpon>IconButton.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Converters\DataSourceToLastItemConverter.cs" />
     <Compile Include="Converters\EqualityToBooleanConverter.cs" />
     <Compile Include="Converters\InvertedBooleanConverter.cs" />
     <Compile Include="Converters\ProgressToAngleConverter.cs" />
@@ -74,9 +79,7 @@
     <Compile Include="Interfaces\IPageViewModel.cs" />
     <Compile Include="Models\VideoInfo\AutomaticCaptions.cs" />
     <Compile Include="Models\VideoInfo\Format.cs" />
-    <Compile Include="Models\VideoInfo\HttpHeaders.cs" />
-    <Compile Include="Models\VideoInfo\HttpHeaders2.cs" />
-    <Compile Include="Models\VideoInfo\RootObject.cs" />
+    <Compile Include="Models\VideoInfo\VideoInfo.cs" />
     <Compile Include="Models\VideoInfo\Subtitles.cs" />
     <Compile Include="Models\VideoInfo\Thumbnail.cs" />
     <Compile Include="Models\YouTubeObject.cs" />
@@ -166,6 +169,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

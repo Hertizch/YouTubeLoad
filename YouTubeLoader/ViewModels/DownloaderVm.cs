@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
+using Newtonsoft.Json;
 using YouTubeLoader.Extensions;
 using YouTubeLoader.Interfaces;
 using YouTubeLoader.Models;
+using YouTubeLoader.Models.VideoInfo;
 using YouTubeLoader.Properties;
 using YouTubeLoader.Utilities;
 
@@ -58,13 +62,11 @@ namespace YouTubeLoader.ViewModels
         {
             var sb = new StringBuilder();
 
-            sb.Append($"-f \"bestvideo+bestaudio/best\" -o \"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\%(title)s-%(id)s-[%(resolution)s].%(ext)s\" https://www.youtube.com/watch?v={youTubeObject.Id}");
+            sb.Append(addVideoToQueue
+                ? "--skip-download --write-info-json --proxy \"\""
+                : $"--proxy \"\" -f \"bestvideo+bestaudio/best\" -o \"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\%(title)s [%(resolution)s@%(fps)s].%(ext)s\"");
 
-            // If to add new video to list, get title
-            string specialArgs = null;
-
-            if (addVideoToQueue)
-                specialArgs = $"--skip-download --get-thumbnail --get-title https://www.youtube.com/watch?v={youTubeObject.Id}";
+            sb.Append($" https://www.youtube.com/watch?v={youTubeObject.Id}");
 
             // Execute youtube-dl.exe
             using (var process = new Process
@@ -72,7 +74,7 @@ namespace YouTubeLoader.ViewModels
                 StartInfo =
                 {
                     FileName = "youtube-dl.exe",
-                    Arguments = addVideoToQueue ? specialArgs : sb.ToString(),
+                    Arguments = sb.ToString(),
                     UseShellExecute = false,
                     CreateNoWindow = true,
                     RedirectStandardOutput = true
@@ -84,10 +86,7 @@ namespace YouTubeLoader.ViewModels
                 {
                     if (args.Data == null) return;
 
-                    if (youTubeObject.Output == null)
-                        youTubeObject.Output = new List<string>();
-
-                    youTubeObject.Output?.Add(args.Data);
+                    youTubeObject.Output.Add(args.Data);
 
                     YouTubeUtilities.ProcessOutput(youTubeObject, addVideoToQueue);
 
@@ -97,25 +96,45 @@ namespace YouTubeLoader.ViewModels
                 // Exited
                 process.Exited += (sender, args) =>
                 {
-                    Logger.Write($"Terminated process: {youTubeObject.ProcessId}", true);
+                    youTubeObject.ProcessEndDateTime = DateTime.Now;
+                    youTubeObject.ProcessActiveTimeSpan = youTubeObject.ProcessEndDateTime.Subtract(youTubeObject.ProcessStartDateTime);
+
+                    Logger.Write($"Terminated process: {youTubeObject.ProcessId} after: {youTubeObject.ProcessActiveTimeSpan.Hours}h {youTubeObject.ProcessActiveTimeSpan.Minutes}m {youTubeObject.ProcessActiveTimeSpan.Seconds}s", true);
 
                     // Reset flags
                     youTubeObject.IsGatheringInfo = false;
                     youTubeObject.IsDownloading = false;
+                    youTubeObject.IsDownloadingAudio = false;
                     youTubeObject.IsInitializing = false;
 
                     if (youTubeObject.Status != "Complete")
                         youTubeObject.Status = "Stopped";
 
-                    // If to download immidiately
-                    if (autoStart)
-                        Execute_ExecuteYouTubeDl(youTubeObject);
+                    // Read info.json contents if adding object
+                    if (addVideoToQueue && File.Exists(youTubeObject.JsonFilename))
+                    {
+                        var json = File.ReadAllText(youTubeObject.JsonFilename);
+                        youTubeObject.InfoJson = JsonConvert.DeserializeObject<VideoInfo>(json);
 
-                    Debug.WriteLine(@"Process youtube-dl.exe Exited");
+                        youTubeObject.Name = youTubeObject.InfoJson.Title;
+                        youTubeObject.ThumbnailUrl = youTubeObject.InfoJson.Thumbnail;
+
+                        /*
+                        foreach (var format in youTubeObject.InfoJson.Formats)
+                        {
+                            Debug.WriteLine($"Format ID: {format.format} {format.Fps} fps");
+                        }*/
+                    }
+
+                    // If to download immidiately
+                    if (addVideoToQueue && autoStart)
+                        Execute_ExecuteYouTubeDl(youTubeObject);
                 };
 
                 // Start process
                 process.Start();
+
+                youTubeObject.ProcessStartDateTime = DateTime.Now;
 
                 Logger.Write($"Started process: {process.Id} -- Arguments passed: {process.StartInfo.Arguments}", true);
 
@@ -196,7 +215,8 @@ namespace YouTubeLoader.ViewModels
             YouTubeObjects.Add(new YouTubeObject
             {
                 Url = url,
-                Id = id
+                Id = id,
+                Output = new List<string>()
             });
 
             // Set it's status properties

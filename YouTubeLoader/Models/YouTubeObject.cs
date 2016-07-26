@@ -1,15 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using YouTubeLoader.Extensions;
 
 namespace YouTubeLoader.Models
 {
     public class YouTubeObject : Bindable
     {
+        private string _jsonFilename;
+        public string JsonFilename
+        {
+            get { return _jsonFilename; }
+            set { SetField(ref _jsonFilename, value); }
+        }
+
+        private VideoInfo.VideoInfo _infoJson;
+        public VideoInfo.VideoInfo InfoJson
+        {
+            get { return _infoJson; }
+            set { SetField(ref _infoJson, value); }
+        }
+
         private int _processId;
         public int ProcessId
         {
             get { return _processId; }
             set { SetField(ref _processId, value); }
+        }
+
+        private TimeSpan _processActiveTimeSpan;
+        public TimeSpan ProcessActiveTimeSpan
+        {
+            get { return _processActiveTimeSpan; }
+            set { SetField(ref _processActiveTimeSpan, value); }
+        }
+
+        private DateTime _processStartDateTime;
+        public DateTime ProcessStartDateTime
+        {
+            get { return _processStartDateTime; }
+            set { SetField(ref _processStartDateTime, value); }
+        }
+
+        private DateTime _processEndDateTime;
+        public DateTime ProcessEndDateTime
+        {
+            get { return _processEndDateTime; }
+            set { SetField(ref _processEndDateTime, value); }
         }
 
         private string _name;
@@ -94,6 +130,13 @@ namespace YouTubeLoader.Models
         {
             get { return _isDownloading; }
             set { SetField(ref _isDownloading, value); }
+        }
+
+        private bool _isDownloadingAudio;
+        public bool IsDownloadingAudio
+        {
+            get { return _isDownloadingAudio; }
+            set { SetField(ref _isDownloadingAudio, value); }
         }
 
         private bool _isInitializing;
