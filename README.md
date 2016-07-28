@@ -1,4 +1,5 @@
 # YouTubeLoader
+Download YouTube videos to watch while you're offline.
 
 ## License
 - YouTubeLoader (https://github.com/Hertizch/YouTubeLoader) -- The MIT License (MIT)
