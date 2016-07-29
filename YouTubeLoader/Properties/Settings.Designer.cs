@@ -58,5 +58,29 @@ namespace YouTubeLoader.Properties {
                 this["AutoDownloadOnAdd"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string FfmpegInstalledVersion {
+            get {
+                return ((string)(this["FfmpegInstalledVersion"]));
+            }
+            set {
+                this["FfmpegInstalledVersion"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string YouTubeDlInstalledVersion {
+            get {
+                return ((string)(this["YouTubeDlInstalledVersion"]));
+            }
+            set {
+                this["YouTubeDlInstalledVersion"] = value;
+            }
+        }
     }
 }

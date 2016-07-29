@@ -136,7 +136,7 @@ namespace YouTubeLoader.ViewModels
 
                 youTubeObject.ProcessStartDateTime = DateTime.Now;
 
-                Logger.Write($"Started process: {process.Id} -- Arguments passed: {process.StartInfo.Arguments}", true);
+                Logger.Write($"Started process: {process.StartInfo.FileName} ({process.Id}) -- Arguments passed: {process.StartInfo.Arguments}", true);
 
                 process.BeginOutputReadLine();
 

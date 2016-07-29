@@ -28,6 +28,7 @@
             <viewModels:NavigationVm x:Key="NavigationVm" />
             <viewModels:ShellVm x:Key="ShellVm" />
             <viewModels:DownloaderVm x:Key="DownloaderVm" />
+            <viewModels:SettingsVm x:Key="SettingsVm" />
 
             <VisualBrush x:Key="BrushTitlebar" TileMode="Tile" ViewportUnits="Absolute" Viewport="0,0,100,100">
                 <VisualBrush.Visual>
