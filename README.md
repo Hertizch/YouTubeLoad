@@ -1,5 +1,5 @@
 # YouTubeLoader
-Download YouTube videos to watch while you're offline.
+Download YouTube videos to watch while you're offline. It actually just wraps the youtube-dl.exe, by rg3, command-line tool. It is also dependant on FFmpeg to merge audio and video tracks.
 
 ## License
 - YouTubeLoader (https://github.com/Hertizch/YouTubeLoader) -- The MIT License (MIT)
